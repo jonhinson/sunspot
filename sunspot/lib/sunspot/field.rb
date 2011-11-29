@@ -33,7 +33,7 @@ module Sunspot
     #   the value is an array, but this field does not allow multiple values
     #
     def to_indexed(value)
-      if value.is_a? Array
+      if value.is_a? Array and @type.class.to_s != "Sunspot::Type::LatlngType"
         if @multiple
           value.map { |val| to_indexed(val) }
         else

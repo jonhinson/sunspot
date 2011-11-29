@@ -1,6 +1,6 @@
 module Sunspot
   module DSL
-    # 
+    #
     # Provides an API for areas of the query DSL that operate on specific
     # fields. This functionality is provided by the query DSL and the dynamic
     # query DSL.
@@ -9,6 +9,11 @@ module Sunspot
       def initialize(search, query, setup) #:nodoc:
         @search, @query = search, query
         super(query.scope, setup)
+      end
+
+      def spatial(field_name, options = {})
+        spatial = Sunspot::Query::Spatial.new(@setup.field(field_name), options)
+        @query.add_spatial(spatial)
       end
 
       # Specify the order that results should be returned in. This method can
@@ -31,7 +36,7 @@ module Sunspot
         @query.add_sort(sort)
       end
 
-      # 
+      #
       # DEPRECATED Use <code>order_by(:random)</code>
       #
       def order_by_random
@@ -63,7 +68,7 @@ module Sunspot
       #     with(:blog_id, 1)
       #     facet(:category_id)
       #   end
-      #   
+      #
       # The facet specified above will have a row for each category_id that is
       # present in a document which also has a blog_id of 1.
       #
@@ -79,12 +84,12 @@ module Sunspot
       #     category_filter = with(:category_id, 2)
       #     facet(:category_id, :exclude => category_filter)
       #   end
-      # 
+      #
       # Although the results of the above search will be restricted to those
       # with a category_id of 2, the category_id facet will operate as if a
       # category had not been selected, allowing the user to select additional
       # categories (which will presumably be ORed together).
-      # 
+      #
       # It possible to exclude multiple filters by passing an array:
       #
       #   Sunspot.search(Post) do
@@ -95,7 +100,7 @@ module Sunspot
       #           :exclude => [category_filter, author_filter].compact)
       #   end
       #
-      # You should consider using +.compact+ to ensure that the array does not 
+      # You should consider using +.compact+ to ensure that the array does not
       # contain any nil values.
       #
       # <strong>As far as I can tell, Solr only supports multi-select with
